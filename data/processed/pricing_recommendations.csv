@@ -1,0 +1,6 @@
+product_id,category,total_demand,avg_price,competitor_avg_price,demand_factor,suggested_price
+P001,Electronics,5.0,19.244999999999997,19.25,1.25,19.729199999999995
+P002,Electronics,3.0,48.25,48.9,0.75,47.424
+P002,Electronics,3.0,48.25,50.0,0.75,48.067499999999995
+P003,Accessories,1.0,99.0,98.5,1.0,98.69999999999999
+P001,Electronics,5.0,19.244999999999997,18.75,1.25,19.421699999999998

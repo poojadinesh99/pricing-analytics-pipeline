@@ -1,0 +1,50 @@
+[0m22:33:52.207152 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108c10830>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109b4f750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109b4f9d0>]}
+
+
+============================== 22:33:52.210409 | 9351d3bd-2129-4326-b3ae-4227d5c4a718 ==============================
+[0m22:33:52.210409 [info ] [MainThread]: Running with dbt=1.11.7
+[0m22:33:52.210738 [debug] [MainThread]: running dbt with arguments {'static_parser': 'True', 'debug': 'False', 'target_path': 'None', 'no_print': 'None', 'log_cache_events': 'False', 'profiles_dir': '/Users/themysticbrew/.dbt', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'fail_fast': 'False', 'use_colors': 'True', 'introspect': 'True', 'cache_selected_only': 'False', 'write_json': 'True', 'log_path': 'logs', 'empty': 'None', 'partial_parse': 'True', 'use_experimental_parser': 'False', 'log_format': 'default', 'quiet': 'False', 'send_anonymous_usage_stats': 'True', 'warn_error': 'None', 'version_check': 'True', 'printer_width': '80', 'invocation_command': 'dbt init pricing_dbt', 'indirect_selection': 'eager'}
+[0m22:33:52.219597 [info ] [MainThread]: Creating dbt configuration folder at /Users/themysticbrew/.dbt
+[0m22:33:52.220490 [debug] [MainThread]: Starter project path: /Users/themysticbrew/Documents/pricing-analytics-pipeline/.venv/lib/python3.13/site-packages/dbt/include/starter_project
+[0m22:33:52.225562 [info ] [MainThread]: 
+Your new dbt project "pricing_dbt" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m22:33:52.225798 [info ] [MainThread]: Setting up your profile.
+[0m22:33:59.278310 [error] [MainThread]: Encountered an error:
+list index out of range
+[0m22:33:59.285682 [error] [MainThread]: Traceback (most recent call last):
+  File "/Users/themysticbrew/Documents/pricing-analytics-pipeline/.venv/lib/python3.13/site-packages/dbt/cli/requires.py", line 182, in wrapper
+    result, success = func(*args, **kwargs)
+                      ~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/themysticbrew/Documents/pricing-analytics-pipeline/.venv/lib/python3.13/site-packages/dbt/cli/requires.py", line 128, in wrapper
+    return func(*args, **kwargs)
+  File "/Users/themysticbrew/Documents/pricing-analytics-pipeline/.venv/lib/python3.13/site-packages/dbt/cli/main.py", line 483, in init
+    results = task.run()
+  File "/Users/themysticbrew/Documents/pricing-analytics-pipeline/.venv/lib/python3.13/site-packages/dbt/task/init.py", line 346, in run
+    self.setup_profile(profile_name)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/Users/themysticbrew/Documents/pricing-analytics-pipeline/.venv/lib/python3.13/site-packages/dbt/task/init.py", line 261, in setup_profile
+    adapter = self.ask_for_adapter_choice()
+  File "/Users/themysticbrew/Documents/pricing-analytics-pipeline/.venv/lib/python3.13/site-packages/dbt/task/init.py", line 243, in ask_for_adapter_choice
+    return available_adapters[numeric_choice - 1]
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+
+[0m22:33:59.305269 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": false, "command_wall_clock_time": 7.1431384, "process_in_blocks": "0", "process_kernel_time": 0.186447, "process_mem_max_rss": "112771072", "process_out_blocks": "0", "process_user_time": 0.906973}
+[0m22:33:59.306240 [debug] [MainThread]: Command `dbt init` failed at 22:33:59.306069 after 7.14 seconds
+[0m22:33:59.306836 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109b668b0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109c11b50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109bb58c0>]}
+[0m22:33:59.307378 [debug] [MainThread]: Flushing usage events
+[0m22:33:59.890399 [debug] [MainThread]: An error was encountered while trying to flush usage events

@@ -1,0 +1,6 @@
+transaction_id,product_id,customer_id,quantity,price,transaction_date
+T001,P001,C001,2,19.99,2026-03-01
+T002,P002,C002,1,49.5,2026-03-02
+T003,P001,C003,3,18.5,2026-03-03
+T004,P003,C001,1,99.0,2026-03-05
+T005,P002,C004,2,47.0,2026-03-07

@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: fct_pricing
+    description: "Fact pricing model that combines demand, price, and competitor price signals."
+    columns:
+      - name: product_id
+        description: "Unique identifier for the product."
+        tests:
+          - not_null
+          - unique
+      - name: category
+        description: "Product category."
+        tests:
+          - not_null
+      - name: total_demand
+        description: "Total quantity sold."
+        tests:
+          - not_null
+      - name: avg_price
+        description: "Average price paid for the product."
+        tests:
+          - not_null
+      - name: competitor_price
+        description: "Average competitor price (may be null if no competitor data)."
+        tests: []
