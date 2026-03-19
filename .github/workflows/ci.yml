@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+      DBT_PROFILES_DIR: ${{ github.workspace }}/.dbt
 
     steps:
       - name: Checkout repository
@@ -23,7 +24,7 @@ jobs:
 
       - name: Create dbt profiles directory
         run: |
-          mkdir -p ~/.dbt
+          mkdir -p $DBT_PROFILES_DIR
           printf '%s\n' \
             'pricing_dbt:' \
             '  target: dev' \
@@ -33,7 +34,7 @@ jobs:
             '      path: ./data/processed/pricing_dbt.duckdb' \
             '      threads: 1' \
             '      extensions: []' \
-            > ~/.dbt/profiles.yml
+            > $DBT_PROFILES_DIR/profiles.yml
 
       - name: Install dependencies
         run: |
@@ -43,9 +44,9 @@ jobs:
       - name: Run dbt models and tests
         working-directory: pricing_dbt
         run: |
-          dbt --version
-          dbt run
-          dbt test
+          dbt --version --profiles-dir $DBT_PROFILES_DIR
+          dbt run --profiles-dir $DBT_PROFILES_DIR
+          dbt test --profiles-dir $DBT_PROFILES_DIR
 
       - name: Run pricing pipeline
         run: |
