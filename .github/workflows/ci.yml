@@ -19,6 +19,20 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Create dbt profiles directory
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<'YAML'
+pricing_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ./data/processed/pricing_dbt.duckdb
+      threads: 1
+      extensions: []
+YAML
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
