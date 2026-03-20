@@ -45,8 +45,8 @@ jobs:
         working-directory: pricing_dbt
         run: |
           dbt --version
-          dbt run
-          dbt test
+          dbt run --profiles-dir $DBT_PROFILES_DIR
+          dbt test --profiles-dir $DBT_PROFILES_DIR
 
       - name: Run pricing pipeline
         run: |
