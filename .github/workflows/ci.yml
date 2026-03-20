@@ -22,6 +22,12 @@ jobs:
         with:
           python-version: '3.13'
 
+    
+      - name: Create data directories
+        run: |
+          mkdir -p data/processed
+
+     
       - name: Create dbt profiles directory
         run: |
           mkdir -p $DBT_PROFILES_DIR
@@ -31,7 +37,7 @@ jobs:
             '  outputs:' \
             '    dev:' \
             '      type: duckdb' \
-            '      path: ./data/processed/pricing_dbt.duckdb' \
+            '      path: ../data/processed/pricing_dbt.duckdb' \
             '      threads: 1' \
             '      extensions: []' \
             > $DBT_PROFILES_DIR/profiles.yml
@@ -45,8 +51,7 @@ jobs:
         working-directory: pricing_dbt
         run: |
           dbt --version
-          dbt run --profiles-dir $DBT_PROFILES_DIR
-          dbt test --profiles-dir $DBT_PROFILES_DIR
+          dbt build --profiles-dir $DBT_PROFILES_DIR
 
       - name: Run pricing pipeline
         run: |
