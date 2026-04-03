@@ -4,6 +4,7 @@ import pandas as pd
 import streamlit as st
 import subprocess
 import sys
+from scripts.portfolio_metrics import calculate_irr, simulate_scenario
 
 
 @st.cache_data
@@ -99,9 +100,30 @@ def main():
     else:
         st.info("No suggested price column available (run the pricing model pipeline).")
 
+    # Portfolio metrics section
+    st.markdown("### Portfolio Return (IRR)")
+    base_revenue = selected["revenue"].iloc[0] if "revenue" in selected.columns else 0.0
+    cashflows = [-1000.0] + [base_revenue * (0.8 + i * 0.05) for i in range(5)]
+    try:
+        irr_value = calculate_irr(cashflows)
+        st.metric("IRR", f"{irr_value * 100:.2f}%")
+    except Exception as e:
+        st.warning(f"IRR calculation not available: {e}")
+
+    st.markdown("### Scenario Simulation")
+    scenario_multiplier = st.slider("Revenue shock multiplier", min_value=0.5, max_value=1.5, value=1.0, step=0.05)
+    scenario_cashflows = simulate_scenario(cashflows, scenario_multiplier)
+    scenario_df = pd.DataFrame({"period": list(range(len(scenario_cashflows))), "cashflow": scenario_cashflows})
+    st.write(scenario_df)
+    try:
+        scenario_irr = calculate_irr(scenario_cashflows)
+        st.metric("Scenario IRR", f"{scenario_irr * 100:.2f}%")
+    except Exception as e:
+        st.warning(f"Scenario IRR calculation not available: {e}")
+
     st.markdown("---")
     st.markdown("### Pricing table (all products)")
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(df, width='stretch')
 
     st.markdown("---")
     st.markdown("### Demand vs Average Price")
