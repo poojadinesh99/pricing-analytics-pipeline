@@ -1,6 +1,8 @@
 # Pricing Analytics Pipeline
 
-An insurance pricing analytics workflow that ingests, models, and scores premium-related data — delivering data quality controls and an operational dashboard for underwriting and pricing decisions.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+An insurance pricing analytics workflow that ingests, models, and scores premium-related data — delivering data quality controls and an operational dashboard for underwriting and pricing decision[...]
 
 Built with Python, SQL, DuckDB, dbt, and Streamlit.
 
@@ -18,7 +20,7 @@ Built with Python, SQL, DuckDB, dbt, and Streamlit.
 
 ![Dashboard overview](docs/screenshots/dashboard_full.png)
 
-Additional views: [top](docs/screenshots/dashboard_top.png) · [mid](docs/screenshots/dashboard_mid.png) · [benchmarks tab](docs/screenshots/dashboard_benchmarks_tab.png) · [bottom](docs/screenshots/dashboard_bottom.png)
+Additional views: [top](docs/screenshots/dashboard_top.png) · [mid](docs/screenshots/dashboard_mid.png) · [benchmarks tab](docs/screenshots/dashboard_benchmarks_tab.png) · [bottom](docs/screens[...]
 
 ## Data Sources
 
