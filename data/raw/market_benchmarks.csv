@@ -1,0 +1,6 @@
+product_id,benchmark_year,industry_avg_premium,market_share_pct,inflation_rate,region
+P001,2025,825.00,0.18,0.032,national
+P002,2025,1140.00,0.14,0.028,national
+P003,2025,420.00,0.22,0.035,national
+P004,2025,2050.00,0.09,0.030,national
+P005,2025,300.00,0.25,0.025,national

@@ -1,6 +1,6 @@
 product_id,product_name,category,list_price
-P001,Wireless Mouse,Electronics,19.99
-P002,Mechanical Keyboard,Electronics,49.50
-P003,USB-C Hub,Accessories,99.00
-P004,Webcam,Electronics,69.95
-P005,Noise-Cancelling Headphones,Audio,129.00
+P001,Auto Liability,Auto,850.00
+P002,Home Property,Home,1200.00
+P003,Health Basic,Health,450.00
+P004,Commercial Liability,Commercial,2100.00
+P005,Life Term 20,Life,320.00

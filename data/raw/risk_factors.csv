@@ -1,0 +1,9 @@
+product_id,customer_id,risk_score,claims_history_count,credit_tier,region,assessment_date
+P001,C001,0.72,1,good,west,2026-01-10
+P001,C003,0.65,0,excellent,west,2026-01-28
+P001,C006,0.88,2,fair,east,2026-02-25
+P002,C002,0.55,0,excellent,midwest,2026-01-15
+P002,C004,0.78,1,good,south,2026-02-10
+P003,C001,0.60,0,good,west,2026-02-05
+P004,C005,0.82,3,fair,east,2026-02-15
+P005,C002,0.45,0,excellent,midwest,2026-03-01

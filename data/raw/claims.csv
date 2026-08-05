@@ -1,0 +1,7 @@
+claim_id,product_id,customer_id,claim_amount,claim_date,claim_type,status
+CL001,P001,C001,4200.00,2025-06-12,collision,closed
+CL002,P001,C006,8900.00,2025-09-03,collision,open
+CL003,P002,C004,15000.00,2025-11-20,property_damage,closed
+CL004,P004,C005,32000.00,2025-08-01,liability,closed
+CL005,P004,C005,8500.00,2026-01-08,liability,open
+CL006,P001,C006,2100.00,2026-02-15,collision,open

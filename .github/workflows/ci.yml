@@ -47,16 +47,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run dbt models and tests
-        working-directory: pricing_dbt
-        run: |
-          dbt --version
-          dbt build --profiles-dir $DBT_PROFILES_DIR
-
-      - name: Run pricing pipeline
+      - name: Run full pipeline (ingest + dbt + pricing)
         run: |
           python scripts/run_pipeline.py
 
       - name: Run basic linting
         run: |
-          python -m py_compile scripts/pricing_model.py scripts/transform.py scripts/run_pipeline.py streamlit_app.py
+          python -m py_compile scripts/ingestion.py scripts/pricing_model.py scripts/portfolio_metrics.py scripts/transform.py scripts/run_pipeline.py streamlit_app.py

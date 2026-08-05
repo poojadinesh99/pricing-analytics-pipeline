@@ -1,13 +1,16 @@
+"""Insurance pricing recommendation engine."""
+
+from __future__ import annotations
+
 import os
 
 import duckdb
 import pandas as pd
 
 
-def load_analytics():
-    """Load analytics output if present, otherwise build it from processed CSVs."""
+def load_analytics() -> pd.DataFrame:
+    """Load fct_pricing from DuckDB, or fall back to analytics CSV."""
 
-    # Prefer dbt output (fct_pricing table) when available.
     duckdb_path = "data/processed/pricing_dbt.duckdb"
     if os.path.exists(duckdb_path):
         con = duckdb.connect(duckdb_path)
@@ -17,86 +20,64 @@ def load_analytics():
 
     analytics_path = "data/processed/analytics_output.csv"
     if os.path.exists(analytics_path):
-        df = pd.read_csv(analytics_path)
+        return pd.read_csv(analytics_path)
 
-        # The analytics output can include multiple competitor prices per product.
-        # Collapse to a single row per product by averaging competitor prices.
-        if "competitor_avg_price" not in df.columns and "competitor_price" in df.columns:
-            df = (
-                df.groupby("product_id", as_index=False)
-                .agg(
-                    category=("category", "first"),
-                    total_demand=("total_demand", "first"),
-                    avg_price=("avg_price", "first"),
-                    revenue=("revenue", "first"),
-                    competitor_avg_price=("competitor_price", "mean"),
-                )
-            )
-
-        return df
-
-    # Fallback: derive analytics metrics from processed CSVs.
-    tx = pd.read_csv("data/processed/transactions.csv")
-    prod = pd.read_csv("data/processed/products.csv")
-    comp = pd.read_csv("data/processed/competitors.csv")
-
-    agg = (
-        tx.groupby("product_id")
-        .agg(total_demand=("quantity", "sum"), avg_price=("price", "mean"))
-        .reset_index()
+    raise FileNotFoundError(
+        "No analytics data found. Run ingestion and dbt first: python scripts/run_pipeline.py"
     )
-
-    # revenue = sum(price * quantity)
-    revenue = (
-        tx.assign(revenue=tx["price"] * tx["quantity"])
-        .groupby("product_id")["revenue"]
-        .sum()
-        .reset_index()
-    )
-    agg = agg.merge(revenue, on="product_id", how="left")
-
-    agg = agg.merge(prod[["product_id", "category", "list_price"]], on="product_id", how="left")
-
-    comp_avg = comp.groupby("product_id")["price"].mean().reset_index(name="competitor_avg_price")
-    agg = agg.merge(comp_avg, on="product_id", how="left")
-
-    return agg
 
 
 def recommend_price(df: pd.DataFrame) -> pd.DataFrame:
-    """Add price recommendations based on demand and competitor benchmarking."""
+    """Compute suggested premium using risk, claims, competitor, and benchmark signals."""
 
-    # Normalize column naming between different upstream outputs
-    if "competitor_avg_price" not in df.columns and "competitor_price" in df.columns:
-        df = df.rename(columns={"competitor_price": "competitor_avg_price"})
+    out = df.copy()
 
-    # Category-level demand baseline
-    df["category_avg_demand"] = df.groupby("category")["total_demand"].transform("mean")
-    df["demand_factor"] = df["total_demand"] / df["category_avg_demand"].replace(0, 1)
+    out["benchmark_premium"] = out["market_benchmark_premium"].fillna(out["avg_quoted_premium"])
+    out["competitor_premium"] = out["competitor_avg_premium"].fillna(out["benchmark_premium"])
+    out["risk_score"] = out["avg_risk_score"].fillna(0.5)
+    out["loss_ratio"] = out["loss_ratio"].fillna(0.0)
 
-    # Use competitor price where available, otherwise fall back to our avg price
-    df["benchmark_price"] = df["competitor_avg_price"].fillna(df["avg_price"])
+    # Base: blend competitor (40%), benchmark (30%), historical (30%)
+    out["historical_premium"] = out["latest_historical_premium"].fillna(out["avg_quoted_premium"])
+    out["base_premium"] = (
+        out["competitor_premium"] * 0.40
+        + out["benchmark_premium"] * 0.30
+        + out["historical_premium"] * 0.30
+    )
 
-    # Simple blended suggestion (tunable weights)
-    df["suggested_base"] = df["benchmark_price"] * 0.6 + df["avg_price"] * 0.4
+    # Risk adjustment: +/- 15% based on risk score (0.5 = neutral)
+    out["risk_adjustment"] = 1.0 + 0.15 * (out["risk_score"] - 0.5)
 
-    # Adjust by demand (small bump/dip around the category mean)
-    df["suggested_price"] = df["suggested_base"] * (1 + 0.1 * (df["demand_factor"] - 1))
+    # Loss ratio adjustment: increase premium if loss ratio exceeds 0.6
+    out["loss_adjustment"] = out["loss_ratio"].apply(
+        lambda lr: 1.0 + max(0.0, (lr - 0.6) * 0.5) if pd.notna(lr) else 1.0
+    )
 
-    # Guardrails: don't stray too far from known prices
-    df["min_price"] = df["avg_price"] * 0.9
-    df["max_price"] = df["benchmark_price"].fillna(df["avg_price"]) * 1.1
-    df["suggested_price"] = df["suggested_price"].clip(lower=df["min_price"], upper=df["max_price"])
+    out["suggested_premium"] = (
+        out["base_premium"] * out["risk_adjustment"] * out["loss_adjustment"]
+    )
 
-    return df[
+    # Guardrails: stay within 90–115% of current avg quoted premium
+    out["min_premium"] = out["avg_quoted_premium"] * 0.90
+    out["max_premium"] = out["avg_quoted_premium"] * 1.15
+    out["suggested_premium"] = out["suggested_premium"].clip(
+        lower=out["min_premium"], upper=out["max_premium"]
+    )
+
+    return out[
         [
             "product_id",
+            "product_name",
             "category",
-            "total_demand",
-            "avg_price",
-            "competitor_avg_price",
-            "demand_factor",
-            "suggested_price",
+            "avg_quoted_premium",
+            "competitor_avg_premium",
+            "market_benchmark_premium",
+            "avg_risk_score",
+            "loss_ratio",
+            "base_premium",
+            "risk_adjustment",
+            "loss_adjustment",
+            "suggested_premium",
         ]
     ]
 
@@ -105,4 +86,4 @@ if __name__ == "__main__":
     analytics = load_analytics()
     recommendations = recommend_price(analytics)
     recommendations.to_csv("data/processed/pricing_recommendations.csv", index=False)
-    print(recommendations)
+    print(recommendations.to_string(index=False))

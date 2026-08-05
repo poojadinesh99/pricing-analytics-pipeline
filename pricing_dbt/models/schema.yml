@@ -1,26 +1,64 @@
 version: 2
 
 models:
-  - name: fct_pricing
-    description: "Fact pricing model that combines demand, price, and competitor price signals."
+  - name: stg_products
+    description: "Insurance product catalog."
     columns:
       - name: product_id
-        description: "Unique identifier for the product."
-        tests:
-          - not_null
-          - unique
+        tests: [not_null, unique]
+
+  - name: stg_customer_quotes
+    description: "Customer premium quotes."
+    columns:
+      - name: quote_id
+        tests: [not_null, unique]
+      - name: product_id
+        tests: [not_null]
+
+  - name: stg_competitor_quotes
+    description: "Competitor premium quotes."
+    columns:
+      - name: quote_id
+        tests: [not_null, unique]
+      - name: product_id
+        tests: [not_null]
+
+  - name: stg_risk_factors
+    description: "Underwriting risk factors by product and customer."
+    columns:
+      - name: product_id
+        tests: [not_null]
+      - name: risk_score
+        tests: [not_null]
+
+  - name: stg_claims
+    description: "Historical claims data."
+    columns:
+      - name: claim_id
+        tests: [not_null, unique]
+      - name: product_id
+        tests: [not_null]
+
+  - name: stg_historical_premiums
+    description: "Historical premium averages by product and year."
+    columns:
+      - name: product_id
+        tests: [not_null]
+      - name: premium_year
+        tests: [not_null]
+
+  - name: stg_market_benchmarks
+    description: "Industry market benchmark rates."
+    columns:
+      - name: product_id
+        tests: [not_null]
+
+  - name: fct_pricing
+    description: "Insurance pricing fact table combining quotes, risk, claims, and benchmarks."
+    columns:
+      - name: product_id
+        tests: [not_null, unique]
       - name: category
-        description: "Product category."
-        tests:
-          - not_null
-      - name: total_demand
-        description: "Total quantity sold."
-        tests:
-          - not_null
-      - name: avg_price
-        description: "Average price paid for the product."
-        tests:
-          - not_null
-      - name: competitor_price
-        description: "Average competitor price (may be null if no competitor data)."
-        tests: []
+        tests: [not_null]
+      - name: avg_quoted_premium
+        tests: [not_null]

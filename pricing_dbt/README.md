@@ -1,15 +1,18 @@
-Welcome to your new dbt project!
+# pricing_dbt
 
-### Using the starter project
+dbt project for the [Pricing Analytics Pipeline](../README.md). Transforms staged insurance data (customer quotes, competitor quotes, risk factors, claims, historical premiums, market benchmarks, products) into `fct_pricing`, the fact table consumed by the pricing model and Streamlit dashboard.
 
-Try running the following commands:
-- dbt run
-- dbt test
+## Models
 
+- `stg_*` — one staging model per raw source, under `models/`.
+- `fct_pricing` — joins staging models on `product_id` into per-product pricing, risk, and loss metrics.
 
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+## Commands
+
+Run from the repo root via `python scripts/run_pipeline.py`, or directly:
+
+```bash
+dbt build --profiles-dir ../.dbt
+```
+
+See the [repo root README](../README.md) for full pipeline and dashboard docs.
