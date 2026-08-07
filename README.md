@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An insurance pricing analytics workflow that ingests, models, and scores premium-related data — delivering data quality controls and an operational dashboard for underwriting and pricing decision[...]
+An insurance pricing analytics workflow that ingests, models, and scores premium-related data — delivering data quality controls and an operational dashboard for underwriting and pricing decision
 
 Built with Python, SQL, DuckDB, dbt, and Streamlit.
 
