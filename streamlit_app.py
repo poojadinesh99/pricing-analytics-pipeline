@@ -6,6 +6,9 @@ import duckdb
 import pandas as pd
 import streamlit as st
 
+
+if not os.path.exists("data/processed/pricing_dbt.duckdb"):
+    subprocess.run([sys.executable, "scripts/run_pipeline.py"], check=True)
 from scripts.portfolio_metrics import calculate_irr, simulate_scenario
 
 
